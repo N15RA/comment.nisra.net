@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<html>
+	<body>
+		<div id="parent"></div>
+	</body>
+</html>
+
+<style>
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	#parent
+	{
+	 display: inline-block;
+	}
+</style>
+
+<script>
+var json = [
+    {
+        "type": "youtube",
+        "icon": "uri",
+        "name": "roy4801",
+        "comment": "xxxxxxxxxx",
+        "time": "2020-04-12T23:08:40.914Z"
+    },
+    {
+        "type": "slido",
+        "icon": "uri",
+        "name": "roy4801",
+        "comment": "rqerqwerq",
+        "time": "2020-04-12T23:08:40.914Z"
+    }
+];
+
+//https://youtube.com/favicon.ico
+//https://www.sli.do/favicon.ico
+
+for(var i = 0; i < json.length; i++) {
+	console.log(i)
+    var obj = json[i];
+
+    var src = "<div style=\"display: inline-block;\">" + "\n";
+
+   	src += "<div>";
+
+   	if (obj.type == "youtube")
+    {
+    	src += "<img src=\"" + "https://youtube.com/favicon.ico" + "\" width=12px height=12px>" + '\n';
+    }
+    else
+    {
+    	src += "<img src=\"" + "https://www.sli.do/favicon.ico" + "\" width=12px height=12px>" + '\n';
+    }
+    src += "<span style=\"font-weight: bold;\">" + obj.name + "</span>";
+
+    src += ": " + obj.comment;
+
+   	src += "</div>" + '\n';
+   	src += "</div>";
+   	src += "<br>";
+
+    $("#parent").append(src);
+}
+
+
+
+</script>
