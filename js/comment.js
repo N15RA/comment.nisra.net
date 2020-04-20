@@ -1,3 +1,4 @@
+var timer = null;
 var commentHash = {};
 var numOfComments = 0;
 function createComment(type, name, text)
@@ -31,11 +32,11 @@ function hashComment(obj)
     return md5(obj["name"] + obj["text"] + obj["time"] + obj["type"]);
 }
 
-function loadComments(youtube, slido)
+function loadComments(url, youtube, slido)
 {
     $("#loading").remove();
     $.ajax({
-        url:"http://localhost:8080/messages",
+        url: url,
         data: {
             "youtube": youtube,
             "slido": slido
@@ -61,6 +62,7 @@ function loadComments(youtube, slido)
         console.log(`Error: ${errorThrown}`);
         console.log(`Status: ${status}`);
         console.dir(xhr);
+        clearInterval(timer);
     })
     .always(function(xhr, status) {
     });
@@ -70,7 +72,17 @@ $(document).ready(function() {
     let param = new URLSearchParams(window.location.search);
     let ytID = param.get("youtube");
     let slidoID = param.get("slido");
-    let timer = window.setInterval(function() {
-        loadComments(ytID, slidoID);
-    }, 1500);
+    let url = param.get("url");
+    if(url)
+    {
+        timer = window.setInterval(function() {
+            loadComments(url, ytID, slidoID);
+        }, 1500);
+    }
+    else
+    {
+        $("body").append(
+            $("<p/>").html("Provide the ?url=.")
+        );
+    }
 });
