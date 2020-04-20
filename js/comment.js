@@ -32,7 +32,12 @@ function hashComment(obj)
     return md5(obj["name"] + obj["text"] + obj["time"] + obj["type"]);
 }
 
-function loadComments(url, youtube, slido)
+// loadComments(): load the comments API
+// string url     : the url of the API endpoint
+// string youtube : youtube stream id
+// string slido   : slido event hash
+// boolean first  : is first time or not
+function loadComments(url, youtube, slido, first)
 {
     $("#loading").remove();
     $.ajax({
@@ -52,7 +57,10 @@ function loadComments(url, youtube, slido)
             if (!commentHash[objHash])
             {
                 commentHash[objHash] = true;
-                $("#parent").append(createComment(obj["type"], obj["name"], obj["text"]));
+                if(first)
+                    $("#parent").append(createComment(obj["type"], obj["name"], obj["text"]));
+                else
+                    $("#parent").prepend(createComment(obj["type"], obj["name"], obj["text"]));
             }
         }
         console.log(`Refreshed comments in ${new Date(Date.now()).toString()}`);
@@ -75,8 +83,9 @@ $(document).ready(function() {
     let url = param.get("url");
     if(url)
     {
+        loadComments(url, ytID, slidoID, true);
         timer = window.setInterval(function() {
-            loadComments(url, ytID, slidoID);
+            loadComments(url, ytID, slidoID, false);
         }, 1500);
     }
     else
