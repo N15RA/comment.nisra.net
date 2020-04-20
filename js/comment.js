@@ -1,6 +1,18 @@
 var timer = null;
 var commentHash = {};
 var numOfComments = 0;
+
+function errorMsg(msg)
+{
+    $("#parent").append(
+        $("<p/>").html(msg)
+    )
+}
+
+// createComment(): Create a comment element
+// string type: comment type (youtube|slido)
+// string name: name of a comment
+// string text: content
 function createComment(type, name, text)
 {
     var urlDict = {"youtube" : "https://youtube.com/favicon.ico", "slido": "https://www.sli.do/favicon.ico"};
@@ -37,22 +49,32 @@ function hashComment(obj)
 // string youtube : youtube stream id
 // string slido   : slido event hash
 // boolean first  : is first time or not
-function loadComments(url, youtube, slido, first)
+function loadComments(url, youtube=null, slido=null, first=false)
 {
     $("#loading").remove();
+    //
+    data = {}
+    if(youtube)
+        data["youtube"] = youtube;
+    if (slido)
+        data["slido"] = slido;
+    if(!youtube && !slido)
+    {
+        errorMsg("Provide ether youtube or slido.");
+        clearInterval(timer);
+        return;
+    }
+    //
     $.ajax({
         url: url,
-        data: {
-            "youtube": youtube,
-            "slido": slido
-        },
+        data: data,
         type: "GET",
         dataType: "json"
     })
     .done(function(json) {
-        console.log(json);
+        console.log(`array len = ${json.length}`);
         for(var i = 0; i < json.length; i++) {
-            var obj = json[i];
+            let obj = json[i];
             let objHash = hashComment(obj);
             if (!commentHash[objHash])
             {
@@ -66,7 +88,7 @@ function loadComments(url, youtube, slido, first)
         console.log(`Refreshed comments in ${new Date(Date.now()).toString()}`);
     })
     .fail(function(xhr, status, errorThrown) {
-        alert('XHR Error');
+        errorMsg('XHR Error');
         console.log(`Error: ${errorThrown}`);
         console.log(`Status: ${status}`);
         console.dir(xhr);
@@ -76,17 +98,20 @@ function loadComments(url, youtube, slido, first)
     });
 }
 
+const defaultRefreshTime = 1500;
+
 $(document).ready(function() {
     let param = new URLSearchParams(window.location.search);
     let ytID = param.get("youtube");
     let slidoID = param.get("slido");
+    let refTime = parseInt(param.get("refTime"), 10) == NaN ? defaultRefreshTime : parseInt(param.get("refTime"), 10);
     let url = param.get("url");
     if(url)
     {
         loadComments(url, ytID, slidoID, true);
         timer = window.setInterval(function() {
             loadComments(url, ytID, slidoID, false);
-        }, 1500);
+        }, refTime);
     }
     else
     {
