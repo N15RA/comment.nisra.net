@@ -2,6 +2,15 @@
 
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+    }
+    #parent {
+        display: inline-block;
+    }
+</style>
 </head>
 
 <html>
@@ -10,16 +19,7 @@
 	</body>
 </html>
 
-<style>
-	*{
-		padding: 0;
-		margin: 0;
-	}
-	#parent
-	{
-	 display: inline-block;
-	}
-</style>
+
 
 <script>
 var json = [
@@ -39,34 +39,35 @@ var json = [
     }
 ];
 
-//https://youtube.com/favicon.ico
-//https://www.sli.do/favicon.ico
+var numOfComments = 0;
+function createComment(type, name, text)
+{
+    var urlDict = {"youtube" : "https://youtube.com/favicon.ico", "slido": "https://www.sli.do/favicon.ico"};
+    var elem = $("<div/>")
+        .attr("id", "comment")
+        .attr("name", "comment" + numOfComments.toString(10))
+        .html(": " + text)
+        .prepend(
+            $("<span/>")
+            .attr("id", "username")
+            .css("font-weight", "bold")
+            .html(name)
+        )
+        .prepend(
+            $("<img/>")
+            .attr("id", "icon")
+            .attr("src", urlDict[type])
+            .attr("width", "12px")
+            .attr("height", "12px")
+        );
+    numOfComments++;
+    console.log(`Now comment = ${numOfComments}`);
+    return elem;
+}
 
 for(var i = 0; i < json.length; i++) {
-	console.log(i)
     var obj = json[i];
-
-    var src = "<div style=\"display: inline-block;\">" + "\n";
-
-   	src += "<div>";
-
-   	if (obj.type == "youtube")
-    {
-    	src += "<img src=\"" + "https://youtube.com/favicon.ico" + "\" width=12px height=12px>" + '\n';
-    }
-    else
-    {
-    	src += "<img src=\"" + "https://www.sli.do/favicon.ico" + "\" width=12px height=12px>" + '\n';
-    }
-    src += "<span style=\"font-weight: bold;\">" + obj.name + "</span>";
-
-    src += ": " + obj.comment;
-
-   	src += "</div>" + '\n';
-   	src += "</div>";
-   	src += "<br>";
-
-    $("#parent").append(src);
+    $("#parent").prepend(createComment(obj["type"], obj["name"], obj["comment"]));
 }
 
 
