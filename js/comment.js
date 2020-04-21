@@ -88,7 +88,7 @@ function loadComments(url, youtube=null, slido=null, first=false)
         console.log(`Refreshed comments in ${new Date(Date.now()).toString()}`);
     })
     .fail(function(xhr, status, errorThrown) {
-        errorMsg('XHR Error');
+        console.log('XHR Error');
         console.log(`Error: ${errorThrown}`);
         console.log(`Status: ${status}`);
         console.dir(xhr);
@@ -104,7 +104,7 @@ $(document).ready(function() {
     let param = new URLSearchParams(window.location.search);
     let ytID = param.get("youtube");
     let slidoID = param.get("slido");
-    let refTime = parseInt(param.get("refTime"), 10) == NaN ? defaultRefreshTime : parseInt(param.get("refTime"), 10);
+    let refTime = isNaN(parseInt(param.get("refTime"), 10))? defaultRefreshTime : parseInt(param.get("refTime"), 10);
     let url = param.get("url");
     if(url)
     {
