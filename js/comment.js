@@ -30,8 +30,8 @@ function createComment(type, name, text)
             $("<img/>")
             .attr("id", "icon")
             .attr("src", urlDict[type])
-            .attr("width", "12px")
-            .attr("height", "12px")
+            .attr("width", "14px")
+            .attr("height", "14px")
         );
     numOfComments++;
     console.log(`Now comment = ${numOfComments}`);
